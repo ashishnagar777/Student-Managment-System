@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="https:www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Student List</title>
+
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+	crossorigin="anonymous">
+
+<style>
+body {
+	background: #f4f6f9;
+	font-family: Arial, sans-serif;
+}
+
+h2 {
+	font-weight: bold;
+	margin: 20px 0;
+}
+
+/* ===== COMMON OVERLAY ===== */
+.popup-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.6);
+	display: none;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
+.popup-box {
+	background: #fff;
+	padding: 30px;
+	width: 380px;
+	border-radius: 15px;
+	text-align: center;
+	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+	animation: popupScale 0.4s ease;
+}
+
+.popup-box h4 {
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.popup-box p {
+	color: #555;
+	margin-bottom: 20px;
+}
+
+.popup-box .btn {
+	padding: 8px 25px;
+	border-radius: 25px;
+	font-size: 15px;
+	margin: 5px;
+}
+
+@keyframes popupScale {from { opacity:0;
+	transform: scale(0.7);
+}
+
+to {
+	opacity: 1;
+	transform: scale(1);
+}
+}
+</style>
+
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+		<a class="navbar-brand" href="#">Student Management System</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#collapsibleNavbar">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="collapsibleNavbar">
+			<ul class="navbar-nav">
+				<li class="nav-item"><a class="nav-link" th:href="@{/student}">Student
+						Management</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+
+		<div class="text-center">
+			<h2>Student List</h2>
+		</div>
+
+		<div class="mb-3">
+			<a th:href="@{student/new}" class="btn btn-primary btn-sm">Add
+				Student</a>
+		</div>
+
+		<table class="table table-striped table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Email</th>
+					<th style="width: 200px;">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="student:${student}">
+					<td th:text="${student.firstName}"></td>
+					<td th:text="${student.lastName}"></td>
+					<td th:text="${student.email}"></td>
+					<td><a th:href="@{student/edit/{id}(id=${student.id})}"
+						class="btn btn-info btn-sm">Update</a> <a
+						href="javascript:void(0)" class="btn btn-danger btn-sm"
+						th:attr="data-url=@{student/{id}(id=${student.id})}"
+						onclick="openConfirmPopup(this)"> Delete </a></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+	<!-- ===== CONFIRM DELETE POPUP ===== -->
+	<div class="popup-overlay" id="confirmPopup">
+		<div class="popup-box">
+			<h4 class="text-danger">Are you sure?</h4>
+			<p>You want to delete this student.</p>
+			<button class="btn btn-danger" onclick="confirmDelete()">Yes,
+				Delete</button>
+			<button class="btn btn-secondary" onclick="closeConfirmPopup()">Cancel</button>
+		</div>
+	</div>
+
+	<!-- ===== DELETE SUCCESS POPUP ===== -->
+	<div class="popup-overlay" th:if="${deleteSuccess}"
+		style="display: flex;">
+		<div class="popup-box">
+			<h4 class="text-success">Deleted!</h4>
+			<p>Student deleted successfully.</p>
+			<button class="btn btn-success" onclick="redirectAfterDelete()">OK</button>
+		</div>
+	</div>
+
+	<script>
+		let deleteUrl = '';
+
+		function openConfirmPopup(element) {
+			deleteUrl = element.getAttribute('data-url');
+			document.getElementById('confirmPopup').style.display = 'flex';
+		}
+
+		function closeConfirmPopup() {
+			document.getElementById('confirmPopup').style.display = 'none';
+			deleteUrl = '';
+		}
+
+		function confirmDelete() {
+			window.location.href = deleteUrl;
+		}
+
+		function redirectAfterDelete() {
+			window.location.href = "/student";
+		}
+	</script>
+
+</body>
+</html>
