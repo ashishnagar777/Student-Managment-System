@@ -17,7 +17,7 @@ A Spring Boot based web application designed to manage student records efficient
 - Thymeleaf
 - MySQL
 - Maven
-- Swagger (OpenAPI)
+- Swagger(OpenAPI)
 
 ## 📂 Architecture
 - Controller Layer
